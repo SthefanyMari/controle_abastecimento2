@@ -6,10 +6,10 @@ class AbastecimentoRepository {
   final _db = FirebaseFirestore.instance.collection('abastecimentos');
 
   Stream<List<Abastecimento>> listarPorVeiculo(String veiculoId) {
-    return _db.where('veiculoId', isEqualTo: veiculoId).snapshots().map(
-      (snap) => snap.docs.map((doc) => Abastecimento.fromDoc(doc.id, doc.data())).toList(),
-    );
-  }
+  return _db.where('veiculoId', isEqualTo: veiculoId).snapshots().map(
+    (snap) => snap.docs.map((doc) => Abastecimento.fromFirestore(doc)).toList(),
+  );
+}
 
   Future<void> cadastrar(Abastecimento a) async {
     try {

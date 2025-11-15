@@ -11,17 +11,12 @@ dependencies:
   flutter:
     sdk: flutter
   cupertino_icons: ^1.0.8
-
   firebase_core: ^4.2.1
   firebase_auth: ^6.1.2
   cloud_firestore: ^6.1.0
-
   flutter_riverpod: ^2.5.1
-
   go_router: ^14.2.0
 
-
-  
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -30,3 +25,5 @@ dev_dependencies:
 flutter:
   uses-material-design: true
 
+  assets:
+    - assets/banner.png

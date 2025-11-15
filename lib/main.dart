@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
-import 'package:abastecimento/features/veiculos/veiculo_screen.dart';
+import 'package:abastecimento/features/home/home_screen.dart';
+import 'package:abastecimento/shared/app_theme.dart'; 
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -18,12 +19,9 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'App Veículos',
-      theme: ThemeData(
-        useMaterial3: true,
-        colorSchemeSeed: Colors.blue,
-      ),
-      home: const VeiculoScreen(), 
+      title: 'Gestão de Veículos',
+      theme: AppTheme.theme, 
+      home: const HomeScreen(),
     );
   }
 }

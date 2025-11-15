@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class Abastecimento {
   final String id;
   final DateTime data;
@@ -34,17 +36,19 @@ class Abastecimento {
     };
   }
 
-  factory Abastecimento.fromDoc(String id, Map<String, dynamic> doc) {
+factory Abastecimento.fromFirestore(DocumentSnapshot doc) {
+    final data = doc.data() as Map<String, dynamic>;
     return Abastecimento(
-      id: id,
-      data: DateTime.parse(doc['data']),
-      quantidadeLitros: (doc['quantidadeLitros'] as num).toDouble(),
-      valorPago: (doc['valorPago'] as num).toDouble(),
-      quilometragem: doc['quilometragem'],
-      tipoCombustivel: doc['tipoCombustivel'],
-      veiculoId: doc['veiculoId'],
-      consumo: (doc['consumo'] as num).toDouble(),
-      observacao: doc['observacao'] ?? '',
+      id: doc.id,
+      data: DateTime.parse(data['data']),
+      quantidadeLitros: (data['quantidadeLitros'] as num).toDouble(),
+      valorPago: (data['valorPago'] as num).toDouble(),
+      quilometragem: data['quilometragem'],
+      tipoCombustivel: data['tipoCombustivel'],
+      veiculoId: data['veiculoId'],
+      consumo: (data['consumo'] as num).toDouble(),
+      observacao: data['observacao'] ?? '',
     );
   }
+
 }

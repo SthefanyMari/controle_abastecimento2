@@ -1,6 +1,9 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'abastecimento.dart';
 import 'abastecimento_repository.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+
+
 
 final abastecimentoRepositoryProvider = Provider((ref) => AbastecimentoRepository());
 
@@ -19,4 +22,10 @@ class AbastecimentoController {
 
 final abastecimentoControllerProvider = Provider((ref) {
   return AbastecimentoController(ref.read(abastecimentoRepositoryProvider));
+});
+
+final todosAbastecimentosProvider = FutureProvider((ref) async {
+  final firestore = FirebaseFirestore.instance;
+  final snapshot = await firestore.collection('abastecimentos').orderBy('data', descending: true).get();
+  return snapshot.docs.map((doc) => Abastecimento.fromFirestore(doc)).toList();
 });
