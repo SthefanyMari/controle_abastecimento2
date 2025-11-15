@@ -1,4 +1,3 @@
-        
 import 'package:go_router/go_router.dart';
      
 import '../../features/auth/splash_gate.dart';
@@ -15,3 +14,5 @@ final appRouter = GoRouter(
     GoRoute(path: '/home', builder: (_, __) => const HomeScreen()), // placeholder
   ],
 );
+
+

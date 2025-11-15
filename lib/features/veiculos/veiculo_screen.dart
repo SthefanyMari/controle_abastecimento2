@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'veiculo_controller.dart';
 import 'veiculo_cadastro_dialog.dart';
+import 'package:abastecimento/features/abastecimentos/abastecimento_screen.dart';
 
 class VeiculoScreen extends ConsumerWidget {
   const VeiculoScreen({super.key});
@@ -25,9 +26,26 @@ class VeiculoScreen extends ConsumerWidget {
               return ListTile(
                 title: Text('${v.modelo} - ${v.marca}'),
                 subtitle: Text('${v.placa} | ${v.ano} | ${v.tipoCombustivel}'),
-                trailing: IconButton(
-                  icon: const Icon(Icons.delete),
-                  onPressed: () => controller.excluir(v.id),
+                trailing: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    IconButton(
+                      icon: const Icon(Icons.local_gas_station),
+                      tooltip: 'Ver abastecimentos',
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => AbastecimentoScreen(veiculoId: v.id),
+                          ),
+                        );
+                      },
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.delete),
+                      onPressed: () => controller.excluir(v.id),
+                    ),
+                  ],
                 ),
                 onTap: () {
                   showDialog(

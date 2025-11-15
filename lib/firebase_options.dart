@@ -83,4 +83,5 @@ class DefaultFirebaseOptions {
     authDomain: 'controle-de-abastecimento2.firebaseapp.com',
     storageBucket: 'controle-de-abastecimento2.firebasestorage.app',
   );
+
 }
