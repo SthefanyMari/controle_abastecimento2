@@ -1,3 +1,4 @@
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'abastecimento_controller.dart';
@@ -6,6 +7,7 @@ import 'package:abastecimento/shared/app_drawer.dart';
 
 class AbastecimentoScreen extends ConsumerWidget {
   final String veiculoId;
+
   const AbastecimentoScreen({super.key, required this.veiculoId});
 
   @override
@@ -14,64 +16,133 @@ class AbastecimentoScreen extends ConsumerWidget {
     final controller = ref.read(abastecimentoControllerProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Abastecimentos')),
+      extendBodyBehindAppBar: true,
+      appBar: AppBar(
+        title: const Text(
+          'Abastecimentos',
+          style: TextStyle(color: Colors.white),
+        ),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+      ),
       drawer: const AppDrawer(),
-      body: abastecimentosAsync.when(
-        data: (abastecimentos) {
-          if (abastecimentos.isEmpty) {
-            return const Center(
-              child: Text(
-                'Nenhum abastecimento registrado',
-                style: TextStyle(fontSize: 16),
-              ),
-            );
-          }
-          return ListView.builder(
-            itemCount: abastecimentos.length,
-            itemBuilder: (_, i) {
-              final a = abastecimentos[i];
-              return Card(
-                margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                elevation: 2,
-                color: Theme.of(context).colorScheme.background,
-                child: ListTile(
-                  title: Text(
-                    '${a.data.toLocal()} - ${a.quantidadeLitros} L',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Theme.of(context).colorScheme.primary,
-                    ),
+
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Color(0xFF6A11CB), Color(0xFF2575FC)],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+        ),
+
+        child: Padding(
+          padding: const EdgeInsets.only(top: 90, left: 16, right: 16),
+          child: abastecimentosAsync.when(
+            data: (abastecimentos) {
+              if (abastecimentos.isEmpty) {
+                return const Center(
+                  child: Text(
+                    'Nenhum abastecimento registrado',
+                    style: TextStyle(color: Colors.white, fontSize: 18),
                   ),
-                  subtitle: Text(
-                    'R\$${a.valorPago} | Km: ${a.quilometragem}',
-                    style: TextStyle(
-                      color: Theme.of(context).colorScheme.primary,
-                    ),
-                  ),
-                  trailing: IconButton(
-                    icon: Icon(Icons.delete, color: Theme.of(context).colorScheme.secondary),
-                    onPressed: () => controller.excluir(a.id),
-                  ),
-                  onTap: () {
-                    showDialog(
-                      context: context,
-                      builder: (_) => AbastecimentoCadastroDialog(
-                        controller: controller,
-                        veiculoId: veiculoId,
-                        abastecimentoExistente: a,
+                );
+              }
+
+              return ListView.separated(
+                itemCount: abastecimentos.length,
+                separatorBuilder: (_, __) => const SizedBox(height: 16),
+                itemBuilder: (_, i) {
+                  final a = abastecimentos[i];
+
+                  return _buildGlassCard(
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(24),
+                      onTap: () {
+                        showDialog(
+                          context: context,
+                          builder: (_) => AbastecimentoCadastroDialog(
+                            controller: controller,
+                            veiculoId: veiculoId,
+                            abastecimentoExistente: a,
+                          ),
+                        );
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.all(20),
+                        child: Row(
+                          children: [
+                            Container(
+                              width: 58,
+                              height: 58,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Colors.white.withOpacity(0.25),
+                              ),
+                              child: const Icon(
+                                Icons.local_gas_station_rounded,
+                                color: Colors.white,
+                                size: 30,
+                              ),
+                            ),
+
+                            const SizedBox(width: 16),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'R\$ ${a.valorPago.toStringAsFixed(2)} — ${a.quantidadeLitros}L',
+                                    style: const TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    'Data: ${a.data}',
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      color: Colors.white.withOpacity(0.85),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+
+                            const SizedBox(width: 10),
+                            _actionIcon(
+                              icon: Icons.delete,
+                              color: Colors.redAccent,
+                              onTap: () => controller.excluir(a.id),
+                            ),
+                          ],
+                        ),
                       ),
-                    );
-                  },
-                ),
+                    ),
+                  );
+                },
               );
             },
-          );
-        },
-        loading: () => const Center(child: CircularProgressIndicator()),
-        error: (_, __) =>
-            const Center(child: Text('Erro ao carregar abastecimentos')),
+
+            loading: () => const Center(
+              child: CircularProgressIndicator(color: Colors.white),
+            ),
+
+            error: (_, __) => const Center(
+              child: Text(
+                'Erro ao carregar abastecimentos',
+                style: TextStyle(color: Colors.white),
+              ),
+            ),
+          ),
+        ),
       ),
+
       floatingActionButton: FloatingActionButton(
+        backgroundColor: Colors.white.withOpacity(0.30),
+        elevation: 0,
         onPressed: () {
           showDialog(
             context: context,
@@ -81,7 +152,41 @@ class AbastecimentoScreen extends ConsumerWidget {
             ),
           );
         },
-        child: const Icon(Icons.add),
+        child: const Icon(Icons.add, color: Colors.white),
+      ),
+    );
+  }
+  Widget _buildGlassCard({required Widget child}) {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(24),
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
+        child: Container(
+          decoration: BoxDecoration(
+            color: Colors.white.withOpacity(0.12),
+            borderRadius: BorderRadius.circular(24),
+            border: Border.all(color: Colors.white.withOpacity(0.28)),
+          ),
+          child: child,
+        ),
+      ),
+    );
+  }
+  Widget _actionIcon({
+    required IconData icon,
+    required Color color,
+    required VoidCallback onTap,
+  }) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(14),
+      child: Container(
+        padding: const EdgeInsets.all(8),
+        decoration: BoxDecoration(
+          color: color.withOpacity(0.22),
+          borderRadius: BorderRadius.circular(14),
+        ),
+        child: Icon(icon, size: 22, color: color),
       ),
     );
   }

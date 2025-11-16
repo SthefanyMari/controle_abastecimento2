@@ -13,6 +13,7 @@ class AbastecimentoCadastroDialog extends StatefulWidget {
     required this.veiculoId,
     this.abastecimentoExistente,
   });
+  
 
   @override
   State<AbastecimentoCadastroDialog> createState() => _AbastecimentoCadastroDialogState();
